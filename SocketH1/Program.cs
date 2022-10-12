@@ -17,26 +17,52 @@ namespace Client
 
             //We let main thread(client) sleep a bit so server can start up
             Thread.Sleep(1000);
-            ExecuteClient();
+            string ip = ServerIp();
+            string user = Username();
+            while (true)
+            {
+                string message = CreateMessage();
+                if (message == "Exit") Environment.Exit(0);
+                ExecuteClient(ip, user, message);
+            }
+
+        }
+
+        private static string Username()
+        {
+            Console.CursorLeft = 0;
+            Console.Write("Username: ");
+            string? input = Console.ReadLine();
+            return input;
+        }
+
+        static string? ServerIp()
+        {
+            Console.CursorLeft = 0;
+            Console.Write("Input server IP (default 192.168.1.2): ");
+            string? ip = Console.ReadLine();
+            if (ip == "") ip = "192.168.1.2";
+            return ip;
+        }
+        private static string? CreateMessage()
+        {
+            Console.CursorLeft = 0;
+            Console.Write("Message: ");
+            string? input = Console.ReadLine();
+            return input;
         }
 
         // ExecuteClient() Method
-        static void ExecuteClient()
+        static void ExecuteClient(string ip, string? user, string? input)
         {
             try
             {
-
                 // Establish the remote endpoint
                 // for the socket. This example
                 // uses port 11111 on the local
                 // computer.
-                Console.CursorLeft = 0;
-                Console.Write("Input server IP (default 192.168.1.2): ");
-                string ip = Console.ReadLine();
-                if (ip == "") ip = "192.168.1.2";
-                Console.CursorLeft = 0;
-                Console.Write("Message: ");
-                string input = Console.ReadLine();
+
+                
                 //IPHostEntry ipHost = Dns.GetHostEntry(Dns.GetHostName());
                 IPAddress ipAddr = IPAddress.Parse(ip);
                 IPEndPoint localEndPoint = new IPEndPoint(ipAddr, 11111);
@@ -61,7 +87,7 @@ namespace Client
 
                     // Creation of message that
                     // we will send to Server
-                    byte[] messageSent = Encoding.ASCII.GetBytes(input + "<EOF>");
+                    byte[] messageSent = Encoding.ASCII.GetBytes(user + "#" + input + "<EOF>");
                     int byteSent = sender.Send(messageSent);
 
                     // Data buffer
@@ -87,13 +113,11 @@ namespace Client
                 // Manage of Socket's Exceptions
                 catch (ArgumentNullException ane)
                 {
-
                     Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
                 }
 
                 catch (SocketException se)
                 {
-
                     Console.WriteLine("SocketException : {0}", se.ToString());
                 }
 
@@ -105,7 +129,6 @@ namespace Client
 
             catch (Exception e)
             {
-
                 Console.WriteLine(e.ToString());
             }
         }

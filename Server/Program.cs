@@ -9,10 +9,7 @@ namespace Server
     public class Program
     {
         // Main Method
-        static void Main(string[] args)
-        {
-            ExecuteServer();
-        }
+        static void Main(string[] args){}
 
         public static void ExecuteServer()
         {
@@ -78,7 +75,8 @@ namespace Server
                             break;
                     }
                     Console.CursorLeft = cursPos;
-                    Console.WriteLine("Text received -> {0} ", data);
+                    string[] dataArray = data.Split('#');
+                    Console.WriteLine($"Text received -> {dataArray[1]} from user: {dataArray[0]} ");
                     byte[] message = Encoding.ASCII.GetBytes("Message Recieved :)");
 
                     // Send a message to Client
