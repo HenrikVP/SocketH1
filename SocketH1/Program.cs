@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Text;
 
-namespace Client
+namespace SocketH1
 {
     public class Program
     {
@@ -19,6 +19,8 @@ namespace Client
             Thread.Sleep(1000);
             string ip = ServerIp();
             string user = Username();
+            Server.Program.UserList.Add(new Server.User { Name = "Self", });
+
             while (true)
             {
                 string message = CreateMessage();

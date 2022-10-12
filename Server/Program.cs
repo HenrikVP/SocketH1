@@ -8,6 +8,7 @@ namespace Server
 {
     public class Program
     {
+        public static List<User> UserList = new();
         // Main Method
         static void Main(string[] args){}
 
@@ -79,6 +80,15 @@ namespace Server
                     Console.WriteLine($"Text received -> {dataArray[1]} from user: {dataArray[0]} ");
                     byte[] message = Encoding.ASCII.GetBytes("Message Recieved :)");
 
+                    User user = new User() { Name = dataArray[0], Ipaddress = clientEndpoint.Address.ToString() };
+
+                    bool addUser = false;
+                    foreach (User u in UserList)
+                    {
+                        if (u.Name == user.Name && u.Ipaddress == user.Ipaddress) Console.WriteLine("User already exists in list");
+                        else addUser= true;
+                    }
+                    if (addUser == true) UserList.Add(user);
                     // Send a message to Client
                     // using Send() method
                     clientSocket.Send(message);
@@ -89,6 +99,8 @@ namespace Server
                     // for a new Client Connection
                     clientSocket.Shutdown(SocketShutdown.Both);
                     clientSocket.Close();
+
+                    ShowAddressList();
                 }
             }
 
@@ -96,6 +108,14 @@ namespace Server
             {
                 Console.CursorLeft = cursPos;
                 Console.WriteLine(e.ToString());
+            }
+        }
+
+        private static void ShowAddressList()
+        {
+            foreach (User user in UserList)
+            {
+                Console.WriteLine($"{user.Name} IP {user.Ipaddress}");
             }
         }
     }
